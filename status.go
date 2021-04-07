@@ -72,7 +72,8 @@ type SysStatus struct {
 // GetAppStatus 获取应用状态
 func GetAppStatus() Status {
 	var app Status
-	//app.Uptime = utils.TimeSincePro(startTime, language.Lang[config.GetLanguage()])
+
+	app.Uptime = startTime.Format("2006-01-02 15:04:05")
 
 	m := new(runtime.MemStats)
 	runtime.ReadMemStats(m)

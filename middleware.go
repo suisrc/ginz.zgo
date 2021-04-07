@@ -14,22 +14,23 @@ import (
 	"github.com/suisrc/res.zgo"
 )
 
-// NoMethodHandler 未找到请求方法的处理函数
-func NoMethodHandler() gin.HandlerFunc {
+// HandlerFunc -> res.HandlerFunc -> gin.HandlerFunc
+func HandlerFunc(fx res.HandlerFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		cc := &GinContext{Context: c}
-		ResError(cc, res.Err405MethodNotAllowed)
-		// Abort, 终止
+		fx(NewGinContext(c))
 	}
 }
 
+// NoMethodHandler 未找到请求方法的处理函数
+func NoMethodHandler(c *gin.Context) {
+	ResError(NewGinContext(c), res.Err405MethodNotAllowed)
+	// Abort, 终止
+}
+
 // NoRouteHandler 未找到请求路由的处理函数
-func NoRouteHandler() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		cc := &GinContext{Context: c}
-		ResError(cc, res.Err404NotFound)
-		// Abort, 终止
-	}
+func NoRouteHandler(c *gin.Context) {
+	ResError(NewGinContext(c), res.Err404NotFound)
+	// Abort, 终止
 }
 
 //===================================================================

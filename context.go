@@ -38,24 +38,35 @@ func NewGinContext(c *gin.Context) *GinContext {
 
 //==========================================
 
-func (a *GinContext) FormatMessage(emsg *i18n.Message, args map[string]interface{}) string {
-	return i18n.FormatMessage(a.Context, emsg, args)
-}
-func (a *GinContext) GetRequest() *http.Request {
-	return a.Context.Request
-}
+// GetTraceID ...
 func (a *GinContext) GetTraceID() string {
 	return GetTraceID(a.Context)
 }
+
+// GetTraceCIP ...
 func (a *GinContext) GetTraceCIP() string {
 	return GetClientIP(a.Context)
 }
+
+// GetTraceUID ...
 func (a *GinContext) GetTraceUID() string {
 	if usr, ok := GetUserInfo(a.Context); ok {
 		return fmt.Sprintf("[%s]->%s", usr.GetAccount1(), usr.GetUserID())
 	}
 	return ""
 }
+
+// FormatMessage ...
+func (a *GinContext) FormatMessage(emsg *i18n.Message, args map[string]interface{}) string {
+	return i18n.FormatMessage(a.Context, emsg, args)
+}
+
+// GetRequest ...
+func (a *GinContext) GetRequest() *http.Request {
+	return a.Context.Request
+}
+
+// GetUserInfo ...
 func (a *GinContext) GetUserInfo() auth.UserInfo {
 	if usr, ok := GetUserInfo(a.Context); ok {
 		return usr

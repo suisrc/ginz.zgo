@@ -16,8 +16,8 @@ func InitGinEngine(opt UseEngine) *gin.Engine {
 	//gin.SetMode(gin.DebugMode)
 
 	app := gin.New()
-	app.NoMethod(NoMethodHandler())
-	app.NoRoute(NoRouteHandler())
+	app.NoMethod(NoMethodHandler)
+	app.NoRoute(NoRouteHandler)
 
 	opt(app)
 	//app.Use(gin.Logger())

@@ -17,6 +17,7 @@ require (
 	github.com/gin-contrib/gzip v0.0.3
 	github.com/gin-gonic/gin v1.6.3
 	github.com/google/uuid v1.2.0
+	github.com/guonaihong/gout v0.1.8
 	github.com/suisrc/auth.zgo v0.0.0
 	github.com/suisrc/config.zgo v0.0.0
 	github.com/suisrc/gin-i18n v0.1.1
