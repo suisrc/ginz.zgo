@@ -26,30 +26,30 @@ type Context interface {
 	// Get(key string)
 }
 
-var _ Context = &GinContext{}
+var _ Context = &ginContext{}
 
-type GinContext struct {
+type ginContext struct {
 	*gin.Context
 }
 
-func NewGinContext(c *gin.Context) *GinContext {
-	return &GinContext{Context: c}
+func NewContext(c *gin.Context) Context {
+	return &ginContext{Context: c}
 }
 
 //==========================================
 
 // GetTraceID ...
-func (a *GinContext) GetTraceID() string {
+func (a *ginContext) GetTraceID() string {
 	return GetTraceID(a.Context)
 }
 
 // GetTraceCIP ...
-func (a *GinContext) GetTraceCIP() string {
+func (a *ginContext) GetTraceCIP() string {
 	return GetClientIP(a.Context)
 }
 
 // GetTraceUID ...
-func (a *GinContext) GetTraceUID() string {
+func (a *ginContext) GetTraceUID() string {
 	if usr, ok := GetUserInfo(a.Context); ok {
 		return fmt.Sprintf("[%s]->%s", usr.GetAccount1(), usr.GetUserID())
 	}
@@ -57,17 +57,17 @@ func (a *GinContext) GetTraceUID() string {
 }
 
 // FormatMessage ...
-func (a *GinContext) FormatMessage(emsg *i18n.Message, args map[string]interface{}) string {
+func (a *ginContext) FormatMessage(emsg *i18n.Message, args map[string]interface{}) string {
 	return i18n.FormatMessage(a.Context, emsg, args)
 }
 
 // GetRequest ...
-func (a *GinContext) GetRequest() *http.Request {
+func (a *ginContext) GetRequest() *http.Request {
 	return a.Context.Request
 }
 
 // GetUserInfo ...
-func (a *GinContext) GetUserInfo() auth.UserInfo {
+func (a *ginContext) GetUserInfo() auth.UserInfo {
 	if usr, ok := GetUserInfo(a.Context); ok {
 		return usr
 	}

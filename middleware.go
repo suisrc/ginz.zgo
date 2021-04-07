@@ -17,19 +17,19 @@ import (
 // HandlerFunc -> res.HandlerFunc -> gin.HandlerFunc
 func HandlerFunc(fx res.HandlerFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fx(NewGinContext(c))
+		fx(NewContext(c))
 	}
 }
 
 // NoMethodHandler 未找到请求方法的处理函数
 func NoMethodHandler(c *gin.Context) {
-	ResError(NewGinContext(c), res.Err405MethodNotAllowed)
+	ResError(NewContext(c), res.Err405MethodNotAllowed)
 	// Abort, 终止
 }
 
 // NoRouteHandler 未找到请求路由的处理函数
 func NoRouteHandler(c *gin.Context) {
-	ResError(NewGinContext(c), res.Err404NotFound)
+	ResError(NewContext(c), res.Err404NotFound)
 	// Abort, 终止
 }
 
@@ -74,7 +74,7 @@ func I18nMiddleware(bundle *i18n.Bundle) gin.HandlerFunc {
 // WWWMiddleware 静态站点中间件
 func WWWMiddleware(root string, skippers ...res.SkipperFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		cc := NewGinContext(c)
+		cc := NewContext(c)
 		if res.SkipHandler(cc, skippers...) {
 			c.Next()
 			return
@@ -103,7 +103,7 @@ func WWWMiddleware(root string, skippers ...res.SkipperFunc) gin.HandlerFunc {
 // 不推荐使用,可以使用gin中的跨域处理
 func CORSMiddleware2(skippers ...res.SkipperFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		cc := NewGinContext(c)
+		cc := NewContext(c)
 		if res.SkipHandler(cc, skippers...) {
 			c.Next()
 			return

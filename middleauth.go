@@ -64,7 +64,7 @@ func UseAuthzClientMiddleware(c *gin.Context) {
 	}
 	if user.TokenID == "" {
 		// 令牌为空， 拒绝访问
-		ResError(NewGinContext(c), res.Err401Unauthorized)
+		ResError(NewContext(c), res.Err401Unauthorized)
 		return // 无有效登陆用户
 	}
 	// 为后端服务器提供服务
@@ -86,7 +86,7 @@ func UseAuthxClientMiddleware(c *gin.Context) {
 	}
 	if user.TokenID == "" {
 		// 令牌为空， 拒绝访问
-		ResError(NewGinContext(c), res.Err401Unauthorized)
+		ResError(NewContext(c), res.Err401Unauthorized)
 		return // 无有效登陆用户
 	}
 	// 为后端服务器提供服务
@@ -118,7 +118,7 @@ func UseRemoteAuth(c *gin.Context, user *SigninUser, authz string) bool {
 		Do()
 	if err != nil {
 		// 远程认证访问发生异常
-		FixResponse500Error2Logger(NewGinContext(c), err)
+		FixResponse500Error2Logger(NewContext(c), err)
 		return false
 	} else if code >= 400 {
 		// 直接返回上级服务的结果
