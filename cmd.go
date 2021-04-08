@@ -8,6 +8,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var (
+	DEBUG = false
+)
+
 // SetConfigFile 设定配置文件
 func SetServeConfig(s string) Option {
 	return func(o *Options) {
@@ -59,5 +63,6 @@ func RunWeb(app *cli.App, run func(ctx context.Context, opts ...Option) error) {
 	err := app.Run(os.Args)
 	if err != nil {
 		logger.Errorf(ctx, logger.ErrorWW(err))
+		panic(err)
 	}
 }

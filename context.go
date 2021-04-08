@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/suisrc/auth.zgo"
 	i18n "github.com/suisrc/gin-i18n"
 	"github.com/suisrc/logger.zgo"
@@ -13,43 +14,41 @@ import (
 )
 
 type Context interface {
+	logger.ContextTrace
 	context.Context
 	res.Context
-	res.ReqContext
 
-	ReqContext
-	ResContext
+	GetUserInfo() auth.UserInfo                              // 获取登陆用户信息
+	ShouldBindWith(obj interface{}, b binding.Binding) error // bind
+	Data(int, string, []byte)                                // 写入数据
+	Redirect(int, string)                                    // 重定向RX
 
-	logger.ContextTrace
-
-	// Set(key string, value interface{})
-	// Get(key string)
 }
 
-var _ Context = &ginContext{}
+var _ Context = &GinContext{}
 
-type ginContext struct {
+type GinContext struct {
 	*gin.Context
 }
 
 func NewContext(c *gin.Context) Context {
-	return &ginContext{Context: c}
+	return &GinContext{Context: c}
 }
 
 //==========================================
 
 // GetTraceID ...
-func (a *ginContext) GetTraceID() string {
+func (a *GinContext) GetTraceID() string {
 	return GetTraceID(a.Context)
 }
 
 // GetTraceCIP ...
-func (a *ginContext) GetTraceCIP() string {
+func (a *GinContext) GetTraceCIP() string {
 	return GetClientIP(a.Context)
 }
 
 // GetTraceUID ...
-func (a *ginContext) GetTraceUID() string {
+func (a *GinContext) GetTraceUID() string {
 	if usr, ok := GetUserInfo(a.Context); ok {
 		return fmt.Sprintf("[%s]->%s", usr.GetAccount1(), usr.GetUserID())
 	}
@@ -57,17 +56,17 @@ func (a *ginContext) GetTraceUID() string {
 }
 
 // FormatMessage ...
-func (a *ginContext) FormatMessage(emsg *i18n.Message, args map[string]interface{}) string {
+func (a *GinContext) FormatMessage(emsg *i18n.Message, args map[string]interface{}) string {
 	return i18n.FormatMessage(a.Context, emsg, args)
 }
 
 // GetRequest ...
-func (a *ginContext) GetRequest() *http.Request {
+func (a *GinContext) GetRequest() *http.Request {
 	return a.Context.Request
 }
 
 // GetUserInfo ...
-func (a *ginContext) GetUserInfo() auth.UserInfo {
+func (a *GinContext) GetUserInfo() auth.UserInfo {
 	if usr, ok := GetUserInfo(a.Context); ok {
 		return usr
 	}

@@ -111,6 +111,7 @@ func UseRemoteAuth(c *gin.Context, user *SigninUser, authz string) bool {
 		head[k] = strings.Join(v, "; ") // 拷贝请求头（拷贝过程中， 其中会带有cookie信息）
 	}
 	err := gout.GET(authz).
+		Debug(DEBUG).
 		SetHeader(head).
 		BindHeader(user).
 		BindBody(body).

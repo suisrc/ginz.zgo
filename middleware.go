@@ -21,6 +21,13 @@ func HandlerFunc(fx res.HandlerFunc) gin.HandlerFunc {
 	}
 }
 
+// HandlerFunc2 -> res.HandlerFunc -> gin.HandlerFunc
+func HandlerFunc2(fx res.HandlerFunc, nc func(*gin.Context) res.Context) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fx(nc(c))
+	}
+}
+
 // NoMethodHandler 未找到请求方法的处理函数
 func NoMethodHandler(c *gin.Context) {
 	ResError(NewContext(c), res.Err405MethodNotAllowed)

@@ -7,18 +7,9 @@ import (
 	"github.com/suisrc/res.zgo"
 )
 
-type ResContext interface {
-	res.Context
-
-	Next()                    // 执行Next
-	Abort()                   // 结束执行
-	Data(int, string, []byte) // 写入数据
-	Redirect(int, string)     // 重定向RX
-}
-
 // ResSuccess 包装响应错误
 // 禁止service层调用,请使用NewSuccess替换
-func ResSuccess(ctx ResContext, v interface{}) error {
+func ResSuccess(ctx Context, v interface{}) error {
 	res := res.NewSuccess(ctx, v)
 	//ctx.JSON(http.StatusOK, res)
 	//ctx.Abort()
@@ -28,7 +19,7 @@ func ResSuccess(ctx ResContext, v interface{}) error {
 
 // ResError 包装响应错误
 // 禁止service层调用,请使用NewWarpError替换
-func ResError(ctx ResContext, em *res.ErrorModel) error {
+func ResError(ctx Context, em *res.ErrorModel) error {
 	res := res.NewWrapError(ctx, em)
 	//ctx.JSON(http.StatusOK, res)
 	//ctx.Abort()
@@ -38,7 +29,7 @@ func ResError(ctx ResContext, em *res.ErrorModel) error {
 
 // ResJSON 响应JSON数据
 // 禁止service层调用
-func ResJSON(ctx ResContext, status int, v interface{}) {
+func ResJSON(ctx Context, status int, v interface{}) {
 	if ctx == nil {
 		return
 	}
@@ -57,7 +48,7 @@ func ResJSON(ctx ResContext, status int, v interface{}) {
 }
 
 // FixResponseError 上级应用已经处理了返回值
-func FixResponseError(c ResContext, err error) bool {
+func FixResponseError(c Context, err error) bool {
 	switch err.(type) {
 	case *res.Success, *res.ErrorInfo:
 		ResJSON(c, http.StatusOK, err)
@@ -83,7 +74,7 @@ func FixResponseError(c ResContext, err error) bool {
 }
 
 // FixResponse400Error 修复返回的异常
-func FixResponse400Error(c ResContext, err error, errfunc func()) {
+func FixResponse400Error(c Context, err error, errfunc func()) {
 	if FixResponseError(c, err) {
 		return
 	}
@@ -94,7 +85,7 @@ func FixResponse400Error(c ResContext, err error, errfunc func()) {
 }
 
 // FixResponse401Error 修复返回的异常, 注意, 401异常会导致系统重定向到登陆页面
-func FixResponse401Error(c ResContext, err error, errfunc func()) {
+func FixResponse401Error(c Context, err error, errfunc func()) {
 	if FixResponseError(c, err) {
 		return
 	}
@@ -105,7 +96,7 @@ func FixResponse401Error(c ResContext, err error, errfunc func()) {
 }
 
 // FixResponse403Error 修复返回的异常
-func FixResponse403Error(c ResContext, err error, errfunc func()) {
+func FixResponse403Error(c Context, err error, errfunc func()) {
 	if FixResponseError(c, err) {
 		return
 	}
@@ -116,7 +107,7 @@ func FixResponse403Error(c ResContext, err error, errfunc func()) {
 }
 
 // FixResponse406Error 修复返回的异常
-func FixResponse406Error(c ResContext, err error, errfunc func()) {
+func FixResponse406Error(c Context, err error, errfunc func()) {
 	if FixResponseError(c, err) {
 		return
 	}
@@ -127,7 +118,7 @@ func FixResponse406Error(c ResContext, err error, errfunc func()) {
 }
 
 // FixResponse500Error 修复返回的异常
-func FixResponse500Error(c ResContext, err error, errfunc func()) {
+func FixResponse500Error(c Context, err error, errfunc func()) {
 	if FixResponseError(c, err) {
 		return
 	}
